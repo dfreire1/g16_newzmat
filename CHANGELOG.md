@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-Version 1.1.0 - [Date: August 25, 2023]
+Version 1.1.0 - [Date: March 27, 2025]
 ---------------------------------------
 
 **New Feature:**
