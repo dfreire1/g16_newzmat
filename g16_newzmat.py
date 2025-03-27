@@ -72,15 +72,22 @@ def remove_connectivity_data(file_path):
     with open(file_path, 'r') as file:
         lines = file.readlines()
 
-    atomic_coord_pattern = re.compile(r'^\s*[A-Z][a-z]?\s+-?\d+\.\d+\s+-?\d+\.\d+\s+-?\d+\.\d+.*')
+    # Regex patterns to match atomic coordinates and connectivity lines
+    atomic_coord_pattern = re.compile(r'^\s*[A-Z][a-z]?\s+-?\d+\.\d+\s+-?\d+\.\d+\s+-?\d+\.\d+')
+    connectivity_pattern = re.compile(r'^\s*\d+\s+\d+(\s+\d+\.\d+)+')
 
     cleaned_lines = []
     for line in lines:
-        if not atomic_coord_pattern.match(line):
-            cleaned_lines.append(line)
-        else:
-            cleaned_lines.append('\n')
+        # Skip lines matching coordinates or connectivity
+        if atomic_coord_pattern.match(line) or connectivity_pattern.match(line):
+            continue
+        cleaned_lines.append(line)
 
+    # Remove trailing empty lines
+    while len(cleaned_lines) > 0 and cleaned_lines[-1].strip() == '':
+        cleaned_lines.pop()
+
+    # Add exactly two blank lines at the end
     cleaned_lines.append('\n\n')
 
     with open(file_path, 'w') as file:
