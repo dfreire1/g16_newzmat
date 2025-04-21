@@ -36,8 +36,9 @@ def add_lines_to_gjf(file_name, new_file_name, keywords):
 
     if route_line_index != -1:
         route_line = original_lines[route_line_index]
-        route_parts = route_line.strip().split()
-        route_keywords = route_parts[1:]  # Exclude the '#'
+        tokens = route_line.strip().split()
+        directive = tokens[0] # Preserve the original directive (e.g., '#p')
+        route_keywords = tokens[1:]  # Exclude the '#'
 
         keyword_dict = {}
         for kw in keywords:  # User-provided keywords from command line
@@ -60,7 +61,7 @@ def add_lines_to_gjf(file_name, new_file_name, keywords):
             if not any(k.startswith(base + '=') for k in new_route_keywords):
                 new_route_keywords.append(full_kw)
 
-        new_route_line = '# ' + ' '.join(new_route_keywords)
+        new_route_line = directive + ' ' + ' '.join(new_route_keywords)
         original_lines[route_line_index] = new_route_line
 
     modified_original_content = '\n'.join(original_lines)
@@ -73,7 +74,7 @@ def remove_connectivity_data(file_path):
         lines = file.readlines()
 
     # Regex patterns to match atomic coordinates and connectivity lines
-    atomic_coord_pattern = re.compile(r'^\s*[A-Z][a-z]?\s+-?\d+\.\d+\s+-?\d+\.\d+\s+-?\d+\.\d+')
+    atomic_coord_pattern = re.compile(r'^\s*[A-Z][a-z]?(?:\([^)]+\))?\s+-?\d+\.\d+\s+-?\d+\.\d+\s+-?\d+\.\d+')
     connectivity_pattern = re.compile(r'^\s*\d+\s+\d+(\s+\d+\.\d+)+')
 
     cleaned_lines = []
